@@ -1,7 +1,7 @@
 import cv2
 import os 
 import datetime
-ipList=os.environ[IPLIST]
+ipList=os.environ['IPLIST']
 ips=ipList.split(',')
 
 def main():
