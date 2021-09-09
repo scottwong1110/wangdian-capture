@@ -4,5 +4,6 @@ RUN apt-get update \
 RUN mkdir -p /bankapp/deploy/
 COPY ./* /bankapp/deploy/
 WORKDIR /bankapp/deploy/
-RUN pip install -q -r ./requirements.txt
+RUN pip install -q -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple 
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 CMD sh ./startup.sh
