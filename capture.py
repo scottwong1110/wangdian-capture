@@ -17,8 +17,8 @@ def main():
                 if cap.isOpened():
                     ret, frame = cap.read()
                     if ret==True:
-                        cv2.imshow(frame)
-                        cv2.waitKey(1)
+                        cv2.imwrite('./test.jpg',frame)
+                        
                        
 if __name__ == '__main__':
     main()
