@@ -12,7 +12,7 @@ def main():
             print(now.hour)
             print(now.minute)
             for ip in ips:
-                rtsp = 'rtsp://admin:1234567a@%s/Streaming/Channels/101' % ip
+                rtsp = 'rtsp://admin:a123456789@%s/Streaming/Channels/101' % ip
                 cap = cv2.VideoCapture(rtsp)
                 if cap.isOpened():
                     ret, frame = cap.read()
