@@ -25,9 +25,18 @@ def getCertificate():
     r = requests.post(getCertUrl,data = data)
     result =r.json()
     url = result['returnData']['url']
-    
+    return url
     
 def uploadImage():
+    url = getCertificate()
+    data = {'file':("file", open(filepath,'rb').read())}
+    encode_data = encode_multipart_formdata(data)
+    data = encode_data[0]
+    headers = {
+      "content-Type":encode_data[1]
+    }
+    print(str(datetime.datetime.now()))
+    
     
     
 
