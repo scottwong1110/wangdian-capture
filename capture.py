@@ -71,30 +71,35 @@ def collectData(equipSn,print_time,print_fileId):
     r = requests.post(collectDataUrl,data = data)
     result =r.json()
     print('collect Data return:',result)
-    if result['returnData']=='success':
-        collectDataUrl
+    return result['returnData']
+
 
 def main():
     while True:
         now = datetime.datetime.now()
-        if now.second == 0:
+        if now.second == 0 and now.minute % 5 == 0:
         #if now.hour == 18 and now.minute==0 and now.second==0
-            print(now.hour)
-            print(now.minute)
+            print('hour:',now.hour)
+            print('minute',now.minute)
             for camera in camera_arr:
                 ip = camera['ip']
                 print_time = datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )
                 rtsp = 'rtsp://admin:a123456789@%s/Streaming/Channels/101' % ip
-                savePic(rtsp,camera['equipSn'])
+                try:
+                    savePic(rtsp,camera['equipSn'])
+                except:
+                     print('cannot capture image',camera['ip'])    
                 print_fileId = uploadImage(camera['equipSn'])
                 if print_fileId==False:
                     for i in range(2):
                         print_fileId = uploadImage(camera['equipSn'])
                 if print_fileId!=False:
-                    collectDataUrl(camera['equipSn'],print_time,print_fileId)
+                    result = collectDataUrl(camera['equipSn'],print_time,print_fileId)
+                    if result!='success':
+                        print('cannot upload collectData,camera ip=',camera['ip'])    
                 else:
                     print('cannot upload image,camera ip=',camera['ip'])
-                        
+                                           
 if __name__ == '__main__':
     main()
 
