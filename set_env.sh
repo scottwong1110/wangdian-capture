@@ -4,4 +4,3 @@ export GET_CERT_URL=https://rsb-stg.pingan.com.cn/brcp/ac/emp/customer/bank_hall
 export COLLECT_DATA_URL=https://rsb-stg.pingan.com.cn/brcp/ac/emp/customer/bank_hall/insertNetworkImpressInfo
 export ORG_ID=0800
 export RUN_ENV=FAT
-apt install libgl1-mesa-glx libglib2.0-dev -y
