@@ -1,6 +1,7 @@
 import cv2
 import os 
 import datetime
+import json
 run_env = os.environ['RUN_ENV']
 if run_env == 'PRD':
     verify = True
@@ -38,7 +39,7 @@ def getCertificate(equipSn):
         'equipmentSn':equipSn
     }
     r = requests.post(getCertUrl,data = data, verify=verify)
-    result =r.text.json()
+    result =json.loads(r.text)
     url = result['returnData']['url']
     return url
     
@@ -52,7 +53,7 @@ def uploadImage(equipSn):
     }
     print(datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )+'start upload')
     r = requests.post(upload_url,headers=headers,data=data,timeout=10, verify=verify)
-    result = r.json()
+    result =json.loads(r.text)
     if result['responseCode']=='000000':
         print(datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )+'finish upload')
         return result['data']['docId']
@@ -75,7 +76,7 @@ def collectData(equipSn,print_time,print_fileId):
     }
     
     r = requests.post(collectDataUrl,data = data,verify=verify)
-    result =r.json()
+    result =json.loads(r.text)
     print('collect Data return:',result)
     return result['returnData']
 
