@@ -84,7 +84,7 @@ def collectData(equipSn,print_time,print_fileId):
 def main():
     while True:
         now = datetime.datetime.now()
-        if now.second == 0 and now.minute % 5 == 0:
+        if now.second %20 == 0: #and now.minute % 5 == 0:
         #if now.hour == 18 and now.minute==0 and now.second==0
             print('hour:',now.hour)
             print('minute',now.minute)
