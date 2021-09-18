@@ -1,6 +1,12 @@
 import cv2
 import os 
 import datetime
+run_env = os.environ['RUN_ENV']
+if run_env == 'PRD':
+    verify = True
+else:
+    verify = False
+    
 cameraList=os.environ['CAMERA_LIST']
 cameras=cameraList.split(',')
 camera_arr = []
@@ -31,8 +37,8 @@ def getCertificate(equipSn):
         'queryDate':datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" ),
         'equipmentSn':equipSn
     }
-    r = requests.post(getCertUrl,data = data, verify=False)
-    result =r.json()
+    r = requests.post(getCertUrl,data = data, verify=verify)
+    result =r.text.json()
     url = result['returnData']['url']
     return url
     
@@ -45,7 +51,7 @@ def uploadImage(equipSn):
       "content-Type":encode_data[1]
     }
     print(datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )+'start upload')
-    r = requests.post(upload_url,headers=headers,data=data,timeout=10, verify=False)
+    r = requests.post(upload_url,headers=headers,data=data,timeout=10, verify=verify)
     result = r.json()
     if result['responseCode']=='000000':
         print(datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )+'finish upload')
@@ -68,7 +74,7 @@ def collectData(equipSn,print_time,print_fileId):
       'impressInfoStr':impressInfoStr
     }
     
-    r = requests.post(collectDataUrl,data = data,verify=False)
+    r = requests.post(collectDataUrl,data = data,verify=verify)
     result =r.json()
     print('collect Data return:',result)
     return result['returnData']
