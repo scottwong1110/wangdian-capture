@@ -25,7 +25,7 @@ from urllib3 import encode_multipart_formdata
 import sys
 import requests
 
-def savePic(rtsp,equipSn):       
+def savePic(rtsp,equipSn):
     cap = cv2.VideoCapture(rtsp)
     if cap.isOpened():
         ret, frame = cap.read()
@@ -48,7 +48,6 @@ def uploadImage(equipSn):
     upload_url  = getCertificate(equipSn)
     weFileToken = upload_url.split('&weFileToken=')[1]
     upload_url=upload_url.split('&weFileToken=')[0]
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     print('upload_url:',upload_url)
     print('wefiletoken=',weFileToken)
     data = {'file':("file", open(equipSn+'.jpg','rb').read()),
@@ -81,17 +80,12 @@ def collectData(query):
       'impressInfoStr':impressInfoStr
     }
 
-    #data = json.dumps(data)
-
     print(data)
     print(collectDataUrl)
-    #headers = {'ContentType':'application/json'}
     r = requests.post(collectDataUrl,json=data,verify=verify)
     
-    print('collectData return!!!!!!!!!')
-    print(r.text)
+    print('collectData return=',r.text)
     result =json.loads(r.text)
-    print('collect Data return:',result)
     return result['returnData']
 
 
@@ -110,25 +104,28 @@ def main():
                 try:
                     savePic(rtsp,camera['equipSn'])
                 except:
-                     print('cannot capture image',camera['ip'])    
-                print_fileId = uploadImage(camera['equipSn'])
-                if print_fileId==False:
-                    for i in range(2):
-                        print_fileId = uploadImage(camera['equipSn'])
-                if print_fileId!=False:
-                    query.append(json.dumps({
-                        'networkNo':orgId,
-                        'equipSn':camera['equipSn'],
-                        'printTime':print_time,
-                        'printFileId':print_fileId
+                    print('cannot capture image',camera['ip'])
+                try:
+                    print_fileId = uploadImage(camera['equipSn'])
+          
+                    if print_fileId==False:
+                        for i in range(2):
+                            print_fileId = uploadImage(camera['equipSn'])
+                    if print_fileId!=False:
+                        query.append(json.dumps({
+                            'networkNo':orgId,
+                            'equipSn':camera['equipSn'],
+                            'printTime':print_time,
+                            'printFileId':print_fileId
                         }))
-            
-            result = collectData(query)
-            print(result)
-            if result!='success':
-                print('cannot upload collectData,camera ip=',camera['ip'])    
-            else:
-                print('done once')
+                except:
+                    print('cannot upload image',camera['ip'])
+            try:    
+                result = collectData(query)
+                if result=='success':
+                    print('done upload all images once')
+            except:
+                print('cannot upload image')
                                            
 if __name__ == '__main__':
     main()
