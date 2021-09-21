@@ -109,8 +109,7 @@ def main():
                     print_fileId = uploadImage(camera['equipSn'])
           
                     if print_fileId==False:
-                        for i in range(2):
-                            print_fileId = uploadImage(camera['equipSn'])
+                        print_fileId = uploadImage(camera['equipSn'])
                     if print_fileId!=False:
                         query.append(json.dumps({
                             'networkNo':orgId,
@@ -124,8 +123,14 @@ def main():
                 result = collectData(query)
                 if result=='success':
                     print('done upload all images once')
+                else:
+                    result = collectData(query)
+                    if result=='success':
+                        print('done upload all images once')
+                    else:
+                        print('cannot collect data')
             except:
-                print('cannot upload image')
+                print('cannot collect data')
                                            
 if __name__ == '__main__':
     main()
