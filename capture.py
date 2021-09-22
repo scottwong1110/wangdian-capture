@@ -14,6 +14,7 @@ cameraList=os.environ['CAMERA_LIST']
 cameras=cameraList.split(',')
 camera_arr = []
 for camera in cameras:
+    print(camera)
     camera_arr.append({
     'ip':camera.split('#')[0],
     'equipSn':camera.split('#')[1]    
