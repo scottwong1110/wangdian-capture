@@ -48,6 +48,7 @@ def getCertificate(equipSn):
     
 def uploadImage(equipSn):
     upload_url  = getCertificate(equipSn)
+    print('upload_url:',upload_url)
     weFileToken = upload_url.split('&weFileToken=')[1]
     upload_url=upload_url.split('&weFileToken=')[0]
     print('upload_url:',upload_url)
