@@ -2,6 +2,8 @@ import cv2
 import os 
 import datetime
 import json
+HOUR = int(os.environ['HOUR'])
+MINUTE = int(os.environ['MINUTE'])
 run_env = os.environ['RUN_ENV']
 if run_env == 'PRD':
     verify = True
@@ -92,7 +94,7 @@ def collectData(query):
 def main():
     while True:
         now = datetime.datetime.now()
-        if now.second %20 == 0: #and now.minute % 5 == 0:
+        if now.hour == HOUR and now.minute % MINUTE == 0 and now.second==0:
         #if now.hour == 18 and now.minute==0 and now.second==0
             print('hour:',now.hour)
             print('minute',now.minute)
