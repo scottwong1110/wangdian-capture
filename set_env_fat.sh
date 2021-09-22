@@ -18,3 +18,5 @@ export CAMERA_LIST=172.21.21.102#AIBEE-2CD7087FWD-A20190627AACHD35100102,\
 export GET_CERT_URL=https://rsb-stg.pingan.com.cn/brcp/ac/emp/customer/bank_hall/queryNetworkImpressCert
 export COLLECT_DATA_URL=https://rsb-stg.pingan.com.cn/brcp/ac/emp/customer/bank_hall/insertNetworkImpressInfo
 export ORG_ID=0813
+
+python capture.py
