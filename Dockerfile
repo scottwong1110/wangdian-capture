@@ -8,4 +8,5 @@ RUN pip install -q -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/si
 COPY ./capture.py /bankapp/deploy/
 COPY ./startup.sh /bankapp/deploy/
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
+RUN chmod -R 777 /bankapp/deploy
 CMD sh ./startup.sh
