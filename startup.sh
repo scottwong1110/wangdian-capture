@@ -1,3 +1,3 @@
 ntpd
-sh set_env.sh
+#sh set_env.sh
 python capture.py
