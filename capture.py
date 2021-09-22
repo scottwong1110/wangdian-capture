@@ -107,7 +107,8 @@ def main():
                 rtsp = 'rtsp://admin:a123456789@%s/Streaming/Channels/101' % ip
                 try:
                     savePic(rtsp,camera['equipSn'])
-                except:
+                except Exception as e:
+                    print(e)
                     print('cannot capture image',camera['ip'])
                 try:
                     print_fileId = uploadImage(camera['equipSn'])
@@ -121,7 +122,8 @@ def main():
                             'printTime':print_time,
                             'printFileId':print_fileId
                         }))
-                except:
+                except Exception as e:
+                    print(e)
                     print('cannot upload image',camera['ip'])
             try:    
                 result = collectData(query)
@@ -133,7 +135,8 @@ def main():
                         print('done upload all images once')
                     else:
                         print('cannot collect data')
-            except:
+            except Exception as e:
+                print(e)
                 print('cannot collect data')
                                            
 if __name__ == '__main__':
