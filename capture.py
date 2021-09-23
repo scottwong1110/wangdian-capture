@@ -120,7 +120,7 @@ def main():
                             'printTime':print_time,
                             'printFileId':print_fileId
                         }))
-                print('finished get picture from ip:',ip)
+                    print('finished get picture from ip:',ip)
                 except Exception as e:
                     print(e)
                     print('cannot upload image',camera['ip'])
