@@ -47,7 +47,7 @@ def getCertificate(equipSn):
         'equipmentSn':equipSn
     }
     r = requests.post(getCertUrl,data = data, verify=verify)
-    print(r.text)
+    #print(r.text)
     result =json.loads(r.text)
     url = result['returnData']['url']
     return url
