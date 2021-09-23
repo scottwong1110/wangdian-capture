@@ -54,11 +54,8 @@ def getCertificate(equipSn):
     
 def uploadImage(equipSn):
     upload_url  = getCertificate(equipSn)
-    print('upload_url:',upload_url)
     weFileToken = upload_url.split('&weFileToken=')[1]
     upload_url=upload_url.split('&weFileToken=')[0]
-    print('upload_url:',upload_url)
-    print('wefiletoken=',weFileToken)
     data = {'file':("file", open(equipSn+'.jpg','rb').read()),
             'isCover':1,
             'fileName':equipSn,
@@ -71,8 +68,6 @@ def uploadImage(equipSn):
     }
     print(datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )+'start upload')
     r = requests.post(upload_url,headers=headers,data=data,timeout=10, verify=verify)
-    print(r.text)
-    
     result =json.loads(r.text)
     if result['responseCode']=='000000':
         print(datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )+'finish upload')
@@ -89,11 +84,8 @@ def collectData(query):
       'impressInfoStr':impressInfoStr
     }
 
-    print(data)
-    print(collectDataUrl)
     r = requests.post(collectDataUrl,json=data,verify=verify)
-    
-    print('collectData return=',r.text)
+    print('collectData returned')
     result =json.loads(r.text)
     return result['returnData']
 
@@ -108,6 +100,7 @@ def main():
             query = []
             for camera in camera_arr:
                 ip = camera['ip']
+                print('start get picture from ip:',ip)
                 print_time = datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )
                 rtsp = 'rtsp://admin:'+RTSP_KEY+'@%s/Streaming/Channels/101' % ip
                 try:
@@ -127,17 +120,18 @@ def main():
                             'printTime':print_time,
                             'printFileId':print_fileId
                         }))
+                print('finished get picture from ip:',ip)
                 except Exception as e:
                     print(e)
                     print('cannot upload image',camera['ip'])
             try:    
                 result = collectData(query)
                 if result=='success':
-                    print('done upload all images once')
+                    print('!!!!!!!!!!!!!!!!done upload all images once')
                 else:
                     result = collectData(query)
                     if result=='success':
-                        print('done upload all images once')
+                        print('!!!!!!!!!!!!!!!!done upload all images once')
                     else:
                         print('cannot collect data')
             except Exception as e:
