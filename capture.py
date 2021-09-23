@@ -5,6 +5,7 @@ import json
 HOUR = int(os.environ['HOUR'])
 MINUTE = int(os.environ['MINUTE'])
 run_env = os.environ['RUN_ENV']
+RTSP_KEY = os.environ['RTSP_KEY']
 if run_env == 'PRD':
     verify = True
 else:
@@ -108,7 +109,7 @@ def main():
             for camera in camera_arr:
                 ip = camera['ip']
                 print_time = datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )
-                rtsp = 'rtsp://admin:a123456789@%s/Streaming/Channels/101' % ip
+                rtsp = 'rtsp://admin:'+RTSP_KEY+'@%s/Streaming/Channels/101' % ip
                 try:
                     savePic(rtsp,camera['equipSn'])
                 except Exception as e:
