@@ -34,6 +34,10 @@ def savePic(rtsp,equipSn):
         ret, frame = cap.read()
         if ret==True:
             cv2.imwrite(equipSn+'.jpg',frame)
+        else:
+            print('ret=',ret)
+    else:
+        print('cap is not opened')
             
 def getCertificate(equipSn):
     data = {
