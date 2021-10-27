@@ -2,7 +2,7 @@ import cv2
 import os 
 import datetime
 import json
-HOUR_list = split(',',os.environ['HOUR'])
+HOUR_list = os.environ['HOUR'].split(',')
 HOURS = [int(i) for i in HOUR_list]
 MINUTE = int(os.environ['MINUTE'])
 run_env = os.environ['RUN_ENV']
