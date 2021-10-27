@@ -2,7 +2,8 @@ import cv2
 import os 
 import datetime
 import json
-HOUR = int(os.environ['HOUR'])
+HOUR_list = split(',',os.environ['HOUR'])
+HOURS = [int(i) for i in HOUR_list]
 MINUTE = int(os.environ['MINUTE'])
 run_env = os.environ['RUN_ENV']
 RTSP_KEY = os.environ['RTSP_KEY']
@@ -93,50 +94,51 @@ def collectData(query):
 def main():
     while True:
         now = datetime.datetime.now()
-        if now.hour == HOUR and now.minute % MINUTE == 0 and now.second==0:
-        #if now.hour == 18 and now.minute==0 and now.second==0
-            print('hour:',now.hour)
-            print('minute',now.minute)
-            query = []
-            for camera in camera_arr:
-                ip = camera['ip']
-                print('start get picture from ip:',ip)
-                print_time = datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )
-                rtsp = 'rtsp://admin:'+RTSP_KEY+'@%s/Streaming/Channels/101' % ip
-                try:
-                    savePic(rtsp,camera['equipSn'])
-                except Exception as e:
-                    print(e)
-                    print('cannot capture image',camera['ip'])
-                try:
-                    print_fileId = uploadImage(camera['equipSn'])
-          
-                    if print_fileId==False:
+        for HOUR in HOURS:
+            if now.hour == HOUR and now.minute % MINUTE == 0 and now.second==0:
+            #if now.hour == 18 and now.minute==0 and now.second==0
+                print('hour:',now.hour)
+                print('minute',now.minute)
+                query = []
+                for camera in camera_arr:
+                    ip = camera['ip']
+                    print('start get picture from ip:',ip)
+                    print_time = datetime.datetime.now().strftime( "%Y-%m-%d %H:%M:%S" )
+                    rtsp = 'rtsp://admin:'+RTSP_KEY+'@%s/Streaming/Channels/101' % ip
+                    try:
+                        savePic(rtsp,camera['equipSn'])
+                    except Exception as e:
+                        print(e)
+                        print('cannot capture image',camera['ip'])
+                    try:
                         print_fileId = uploadImage(camera['equipSn'])
-                    if print_fileId!=False:
-                        query.append(json.dumps({
-                            'networkNo':orgId,
-                            'equipSn':camera['equipSn'],
-                            'printTime':print_time,
-                            'printFileId':print_fileId
-                        }))
-                    print('finished get picture from ip:',ip)
-                except Exception as e:
-                    print(e)
-                    print('cannot upload image',camera['ip'])
-            try:    
-                result = collectData(query)
-                if result=='success':
-                    print('!!!!!!!!!!!!!!!!done upload all images once')
-                else:
+
+                        if print_fileId==False:
+                            print_fileId = uploadImage(camera['equipSn'])
+                        if print_fileId!=False:
+                            query.append(json.dumps({
+                                'networkNo':orgId,
+                                'equipSn':camera['equipSn'],
+                                'printTime':print_time,
+                                'printFileId':print_fileId
+                            }))
+                        print('finished get picture from ip:',ip)
+                    except Exception as e:
+                        print(e)
+                        print('cannot upload image',camera['ip'])
+                try:    
                     result = collectData(query)
                     if result=='success':
                         print('!!!!!!!!!!!!!!!!done upload all images once')
                     else:
-                        print('cannot collect data')
-            except Exception as e:
-                print(e)
-                print('cannot collect data')
+                        result = collectData(query)
+                        if result=='success':
+                            print('!!!!!!!!!!!!!!!!done upload all images once')
+                        else:
+                            print('cannot collect data')
+                except Exception as e:
+                    print(e)
+                    print('cannot collect data')
                                            
 if __name__ == '__main__':
     main()
