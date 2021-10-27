@@ -58,7 +58,7 @@ def uploadImage(equipSn):
     upload_url=upload_url.split('&weFileToken=')[0]
     data = {'file':("file", open(equipSn+'.jpg','rb').read()),
             'isCover':1,
-            'fileName':equipSn,
+            'fileName':equipSn+'.jpg',
             'weFileToken':weFileToken
             }
     encode_data = encode_multipart_formdata(data)
