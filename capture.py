@@ -2,9 +2,28 @@ import cv2
 import os 
 import datetime
 import json
+from urllib.request import urlretrieve
+
+#face_lib_config
+HOUR_list_face = os.environ['HOUR_FACE'].split(',')
+HOURS_face = [int(i) for i in HOUR_list]
+MINUTE_face = int(os.environ['MINUTE_FACE'])
+face_token = os.environ['FACE_TOKEN']
+getFaceListUrl = os.environ['GET_FACE_LIST_URL']
+#aibee interface
+getGroupUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/list-user'
+updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
+deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
+
+face_list = []
+#face_list['wangshengyu345']={'imageUrl':'','updatedTime':'',"isUm":""}
+
+#wangdian_capture_config
 HOUR_list = os.environ['HOUR'].split(',')
 HOURS = [int(i) for i in HOUR_list]
 MINUTE = int(os.environ['MINUTE'])
+
+
 run_env = os.environ['RUN_ENV']
 RTSP_KEY = os.environ['RTSP_KEY']
 if run_env == 'PRD':
@@ -90,13 +109,119 @@ def collectData(query):
     result =json.loads(r.text)
     return result['returnData']
 
+def updateFace(um,face_obj):
+    data = {
+        "user":{
+            'user_id':um,
+            'imageUrl': face_obj['imageUrl'],
+        },
+        "groups":[
+            run_env
+        ],
+        "check": True
+    }
+    print(json.dumps(data))
+    r = requests.post(updateFaceUrl,json = json.dumps(data))
+    result =json.loads(r.text)
+    if result['error_no']==0:
+        print('update face pic successfully!,um='+um)
+
+def deleteFace(um):
+    data = {
+        "user_id":um,
+        "group_id":run_env
+    } 
+    print(json.dumps(data))
+    r = requests.post(deleteFaceUrl,json = json.dumps(data))
+    result =json.loads(r.text)
+    if result['error_no']==0:
+        print('delete face pic successfully!,um='+um)
+
+
+def saveFacePic(um,imageUrl):
+    urlretrieve(imageUrl, os.path.join('face_pic',um+'.jpg'))  
+
+def getRunningFaceList(group_id):
+    data = {
+        "group_id":group_id
+    } 
+    print(json.dumps(data))
+    r = requests.post(getGroupUrl,json = json.dumps(data))
+    result =json.loads(r.text)
+    if result['error_no']==0:
+        print('group user number:'+len(result['data']['list']))
+        print('group user:'+result['data']['list'])
+
+def getBranchFaceList(orgId):
+    data = {
+        'branchNo':orgId,
+        'token':face_token
+    }
+    r = requests.post(getFaceListUrl,data = data, verify=verify)
+    print(r.text)
+    result =json.loads(r.text)
+    updatedTime = 0
+    for data in result['data']:
+        newUm = data['umCode'] 
+        #not existed
+        if newUm not in face_list.keys():
+            face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
+            #save picture and update
+            saveFacePic(newUm,data['imageUrl'])
+            updateFace(newUm,face_list[newUm])
+
+        else:
+            #newer info
+            if data['updatedTime'] > face_list[newUm]['updatedTime']
+                face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
+                #save picture and update
+                saveFacePic(newUm,data['imageUrl'])
+                updateFace(newUm,face_list[newUm])
+    #need deletion
+    for key in face_list:
+        delete = 1
+        for data in result['data']:
+            if data['umCode'] == key:
+                delete = 0
+        if delete == 1:
+            deleteFace(key)
+
+    #show running face list
+    getRunningFaceList(run_env)
+
+    return faceList
+
+    
+
 
 def main():
     while True:
         now = datetime.datetime.now()
+
+        #face lib function
+        try:
+            for HOUR in HOURS_face:
+                if now.hour == HOUR and now.minute % MINUTE_face == 0 and now.second==0:
+                    print('face_lib')
+                    print('hour:',now.hour)
+                    print('minute',now.minute)
+                    try :
+                        getBranchFaceList(orgId)
+                    except Exception as e:
+                        print('error from getBranchFaceList')
+                        print(e)
+        except Exception as e:
+            print('error from face_lib')
+            print(e)
+
+
+
+
+        #wangdian capture function
         for HOUR in HOURS:
             if now.hour == HOUR and now.minute % MINUTE == 0 and now.second==0:
             #if now.hour == 18 and now.minute==0 and now.second==0
+                print('wangdian_capture')
                 print('hour:',now.hour)
                 print('minute',now.minute)
                 query = []
