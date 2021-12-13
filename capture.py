@@ -152,7 +152,7 @@ def getRunningFaceList(group_id):
         print('group user number:'+len(result['data']['list']))
         print('group user:'+result['data']['list'])
 
-def getBranchFaceList(orgId):
+def getBranchFaceListAndUpdate(orgId):
     data = {
         'branchNo':orgId,
         'token':face_token
@@ -162,34 +162,36 @@ def getBranchFaceList(orgId):
     result =json.loads(r.text)
     updatedTime = 0
     for data in result['data']:
-        newUm = data['umCode'] 
-        #not existed
-        if newUm not in face_list.keys():
-            face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
-            #save picture and update
-            saveFacePic(newUm,data['imageUrl'])
-            updateFace(newUm,face_list[newUm])
-
-        else:
-            #newer info
-            if data['updatedTime'] > face_list[newUm]['updatedTime']
+        if data['status']=='0':
+            newUm = data['umCode'] 
+            #not existed
+            if newUm not in face_list.keys():
                 face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
                 #save picture and update
                 saveFacePic(newUm,data['imageUrl'])
                 updateFace(newUm,face_list[newUm])
+
+            else:
+                #newer info
+                if data['updatedTime'] > face_list[newUm]['updatedTime']:
+                    face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
+                    #save picture and update
+                    saveFacePic(newUm,data['imageUrl'])
+                    updateFace(newUm,face_list[newUm])
     #need deletion
     for key in face_list:
         delete = 1
         for data in result['data']:
-            if data['umCode'] == key:
-                delete = 0
+            if data['status']=='0':
+                if data['umCode'] == key:
+                    delete = 0
         if delete == 1:
             deleteFace(key)
 
     #show running face list
     getRunningFaceList(run_env)
 
-    return faceList
+    #return faceList
 
     
 
@@ -206,16 +208,13 @@ def main():
                     print('hour:',now.hour)
                     print('minute',now.minute)
                     try :
-                        getBranchFaceList(orgId)
+                        getBranchFaceListAndUpdate(orgId)
                     except Exception as e:
                         print('error from getBranchFaceList')
                         print(e)
         except Exception as e:
             print('error from face_lib')
             print(e)
-
-
-
 
         #wangdian capture function
         for HOUR in HOURS:
