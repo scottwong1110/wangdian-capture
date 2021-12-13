@@ -135,12 +135,12 @@ def getRunningFaceList(group_id):
     data = {
         "group_id":group_id
     } 
-    print(json.dumps(data))
+    print(json.dumps(data),flush=True)
     r = requests.post(getGroupUrl,json = json.dumps(data))
     result =json.loads(r.text)
     if result['error_no']==0:
-        print('group user number:'+len(result['data']['list']))
-        print('group user:'+result['data']['list'])
+        print('group user number:'+len(result['data']['list']),flush=True)
+        print('group user:'+result['data']['list'],flush=True)
 
 def getBranchFaceListAndUpdate(orgId):
     data = {
@@ -148,7 +148,7 @@ def getBranchFaceListAndUpdate(orgId):
         'token':face_token
     }
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    print(r.text)
+    print(r.text,flush=True)
     result =json.loads(r.text)
     updatedTime = 0
     for data in result['data']:
@@ -191,8 +191,8 @@ def main():
         try :
             getBranchFaceListAndUpdate(orgId)
         except Exception as e:
-            print('error from getBranchFaceList')
-            print(e)
+            print('error from getBranchFaceList',flush=True)
+            print(e,flush=True)
         time.sleep(20)
 
                                            
