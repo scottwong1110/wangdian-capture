@@ -9,7 +9,7 @@ import time
 #HOUR_list_face = os.environ['HOUR_FACE'].split(',')
 #HOURS_face = [int(i) for i in HOUR_list]
 #MINUTE_face = int(os.environ['MINUTE_FACE'])
-face_token = '123'
+face_token = os.environ['FACE_TOKEN']
 getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 #aibee interface
 getGroupUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/list-user'
