@@ -16,7 +16,7 @@ getGroupUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 
-face_list = []
+face_list = {}
 #face_list['wangshengyu345']={'downloadUrl':'','updatedDate':'',"isUm":""}
 
 #wangdian_capture_config
