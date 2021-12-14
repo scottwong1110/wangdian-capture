@@ -157,7 +157,7 @@ def getBranchFaceListAndUpdate(orgId):
         if 'status' in data.keys() and data['status']==1:
             print('person deleted')
         else:
-            newUm = data['umCode'] 
+            newUm = data['staffId'] 
             #not existed
             if newUm not in face_list.keys():
                 face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
@@ -179,7 +179,7 @@ def getBranchFaceListAndUpdate(orgId):
             if 'status' in data.keys() and data['status']==1:
                 print('person deleted')
             else:
-                if data['umCode'] == key:
+                if data['staffId'] == key:
                     delete = 0
         if delete == 1:
             deleteFace(key)
