@@ -17,7 +17,7 @@ updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 
 face_list = []
-#face_list['wangshengyu345']={'imageUrl':'','updatedDate':'',"isUm":""}
+#face_list['wangshengyu345']={'downloadUrl':'','updatedDate':'',"isUm":""}
 
 #wangdian_capture_config
 #HOUR_list = os.environ['HOUR'].split(',')
@@ -103,7 +103,7 @@ def updateFace(um,face_obj):
     data = {
         "user":{
             'user_id':um,
-            'imageUrl': face_obj['imageUrl'],
+            'downloadUrl': face_obj['downloadUrl'],
         },
         "groups":[
             run_env
@@ -160,17 +160,17 @@ def getBranchFaceListAndUpdate(orgId):
             newUm = data['staffId'] 
             #not existed
             if newUm not in face_list.keys():
-                face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedDate':data['updatedDate']}
+                face_list[newUm] = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
                 #save picture and update
-                saveFacePic(newUm,data['imageUrl'])
+                saveFacePic(newUm,data['downloadUrl'])
                 updateFace(newUm,face_list[newUm])
 
             else:
                 #need modify
                 if data['updatedDate'] > face_list[newUm]['updatedDate']:
-                    face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedDate':data['updatedDate']}
+                    face_list[newUm] = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
                     #save picture and update
-                    saveFacePic(newUm,data['imageUrl'])
+                    saveFacePic(newUm,data['downloadUrl'])
                     updateFace(newUm,face_list[newUm])
     #need deletion
     for key in face_list:
