@@ -121,7 +121,8 @@ def deleteFace(um):
         "user_id":um,
         "group_id":run_env
     } 
-    print(json.dumps(data))
+    print('deleteFace')
+    print(json.dumps(data),flush=True)
     r = requests.post(deleteFaceUrl,json = json.dumps(data))
     result =json.loads(r.text)
     if result['error_no']==0:
@@ -135,6 +136,7 @@ def getRunningFaceList(group_id):
     data = {
         "group_id":group_id
     } 
+    print('getRunningFaceList')
     print(json.dumps(data),flush=True)
     r = requests.post(getGroupUrl,json = json.dumps(data))
     result =json.loads(r.text)
@@ -152,7 +154,9 @@ def getBranchFaceListAndUpdate(orgId):
     result =json.loads(r.text)
     updatedTime = 0
     for data in result['data']:
-        if data['status']=='0':
+        if 'status' in data.keys() and data['status']==1:
+            print('person deleted')
+        else:
             newUm = data['umCode'] 
             #not existed
             if newUm not in face_list.keys():
@@ -172,7 +176,9 @@ def getBranchFaceListAndUpdate(orgId):
     for key in face_list:
         delete = 1
         for data in result['data']:
-            if data['status']=='0':
+            if 'status' in data.keys() and data['status']==1:
+                print('person deleted')
+            else:
                 if data['umCode'] == key:
                     delete = 0
         if delete == 1:
@@ -182,9 +188,6 @@ def getBranchFaceListAndUpdate(orgId):
     getRunningFaceList(run_env)
 
     #return faceList
-
-    
-
 
 def main():
     while True:
