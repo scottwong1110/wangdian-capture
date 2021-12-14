@@ -17,7 +17,7 @@ updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 
 face_list = []
-#face_list['wangshengyu345']={'imageUrl':'','updatedTime':'',"isUm":""}
+#face_list['wangshengyu345']={'imageUrl':'','updatedDate':'',"isUm":""}
 
 #wangdian_capture_config
 #HOUR_list = os.environ['HOUR'].split(',')
@@ -152,7 +152,7 @@ def getBranchFaceListAndUpdate(orgId):
     r = requests.post(getFaceListUrl,data = data, verify=verify)
     print(r.text,flush=True)
     result =json.loads(r.text)
-    updatedTime = 0
+    updatedDate = 0
     for data in result['data']:
         if 'status' in data.keys() and data['status']==1:
             print('person deleted')
@@ -160,15 +160,15 @@ def getBranchFaceListAndUpdate(orgId):
             newUm = data['staffId'] 
             #not existed
             if newUm not in face_list.keys():
-                face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
+                face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedDate':data['updatedDate']}
                 #save picture and update
                 saveFacePic(newUm,data['imageUrl'])
                 updateFace(newUm,face_list[newUm])
 
             else:
-                #newer info
-                if data['updatedTime'] > face_list[newUm]['updatedTime']:
-                    face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedTime':data['updatedTime'],"isUm":data['isUm']}
+                #need modify
+                if data['updatedDate'] > face_list[newUm]['updatedDate']:
+                    face_list[newUm] = {'imageUrl':data['imageUrl'],'updatedDate':data['updatedDate']}
                     #save picture and update
                     saveFacePic(newUm,data['imageUrl'])
                     updateFace(newUm,face_list[newUm])
