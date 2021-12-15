@@ -4,7 +4,24 @@ import datetime
 import json
 from urllib.request import urlretrieve
 import time
-#import traceback
+
+import hashlib
+
+api_key = "Ne3XyaDSGWzkP120teh5rErB1dfIipMg"
+api_secret = "6xz2hfoBAT7t1quppM0md3awg17xpOI5"
+
+def sign(method=None, body=None, api_key=None, api_secret=None):
+    current_timestamp = int(time.time())
+    sha_1 = hashlib.sha1()
+    sign_str = None
+    if method.lower() in ('put', 'post'):
+        sha_1.update('{}{}{}'.format(body, current_timestamp, api_secret).encode())
+        sign_str = sha_1.hexdigest()
+    return {
+        'Aibee-Auth-ApiKey': api_key,
+        'Aibee-Auth-Sign': sign_str,
+        'Aibee-Auth-Timestamp': str(current_timestamp)
+    }
 
 #face_lib_config
 #HOUR_list_face = os.environ['HOUR_FACE'].split(',')
@@ -112,7 +129,12 @@ def updateFace(um,face_obj):
         ],
         "check": True
     }
-    r = requests.post(updateFaceUrl,json = json.dumps(data))
+    body = json.dumps(data)
+    print('body:',flush=True)
+    print(body,flush=True)
+    sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_key)
+    sign_header["Content-Type"] = "application/json"
+    r = requests.post(updateFaceUrl,data=data,headers = sign_header)
     print(r.text,flush=True)
     result =json.loads(r.text)
     if result['error_no']==0:
@@ -154,7 +176,7 @@ def getBranchFaceListAndUpdate(orgId):
         'token':face_token
     }
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    print(r.text,flush=True)
+    #print(r.text,flush=True)
     result =json.loads(r.text)
     print('printed every person',flush=True)
     updatedDate = 0
