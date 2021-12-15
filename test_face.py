@@ -103,6 +103,7 @@ def updateFace(um,face_obj):
     data = {
         "user":{
             'user_id':um,
+            #need to change to download from edge
             'downloadUrl': face_obj['downloadUrl'],
         },
         "groups":[
@@ -147,8 +148,6 @@ def getRunningFaceList(group_id):
         print('group user:'+result['data']['list'],flush=True)
 
 def getBranchFaceListAndUpdate(orgId):
-    print('local face_list',flush=True)
-    print(face_list,flush=True)
     data = {
         'branchNo':orgId,
         'token':face_token
@@ -170,25 +169,28 @@ def getBranchFaceListAndUpdate(orgId):
                 #save picture and update
                 saveFacePic(newUm,data['downloadUrl'])
                 updateFace(newUm,newface)
-            else:
-                #need modify,update person
-                if data['updatedDate'] > face_list[newUm]['updatedDate']:
-                    newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
-                    #save picture and update
-                    saveFacePic(newUm,data['downloadUrl'])
-                    updateFace(newUm,newface)
+            #else:
+            #    #need modify,update person
+            #    if data['updatedDate'] > face_list[newUm]['updatedDate']:
+            #        newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
+            #        #save picture and update
+            #        saveFacePic(newUm,data['downloadUrl'])
+            #        updateFace(newUm,newface)
     # local face_list need deletion
-    for key in face_list:
-        delete = 1
-        for data in result['data']:
-            #person deleted 
-            if data['status']=='1':
-                print('person already deleted')    
-            else:
-                if data['staffId'] == key:
-                    delete = 0
-        if delete == 1:
-            deleteFace(key)
+    #for key in face_list:
+    #    delete = 1
+    #    for data in result['data']:
+    #        #person deleted 
+    #        if data['status']=='1':
+    #            print('person already deleted')    
+    #        else:
+    #            if data['staffId'] == key:
+    #                delete = 0
+    #    if delete == 1:
+    #        deleteFace(key)
+    
+    print('local face_list',flush=True)
+    print(face_list,flush=True)
 
     #show running face list
     getRunningFaceList(run_env)
