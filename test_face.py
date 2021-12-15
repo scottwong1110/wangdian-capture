@@ -206,7 +206,7 @@ def main():
         #except Exception as e:
         #    print('error from getBranchFaceList',flush=True)
         #    print(e,flush=True)
-        #time.sleep(20)
+        time.sleep(20)
 
                                            
 if __name__ == '__main__':
