@@ -122,7 +122,8 @@ def updateFace(um,face_obj):
         "user":{
             'user_id':um,
             #need to change to download from edge
-            'downloadUrl': face_obj['downloadUrl'],
+            #'image_url': face_obj['downloadUrl'],
+            'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
         },
         "groups":[
             run_env
@@ -134,8 +135,10 @@ def updateFace(um,face_obj):
     print(body,flush=True)
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_key)
     sign_header["Content-Type"] = "application/json"
+    print(sign_header,flush=True)
     r = requests.post(updateFaceUrl,data=data,headers = sign_header)
     print(r.text,flush=True)
+    
     result =json.loads(r.text)
     if result['error_no']==0:
         face_list[um]=face_obj
