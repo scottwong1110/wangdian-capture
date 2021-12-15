@@ -13,7 +13,7 @@ import time
 face_token = os.environ['FACE_TOKEN']
 getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 #aibee interface
-getGroupUrl = os.environ['AIBEE_HOST_URL']+':/users/v1/list-user'
+getGroupUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 
