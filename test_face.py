@@ -150,13 +150,14 @@ def getBranchFaceListAndUpdate(orgId):
         'token':face_token
     }
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    print(r.text,flush=True)
+    #print(r.text,flush=True)
     result =json.loads(r.text)
     updatedDate = 0
     for data in result['data']:
-        if 'status' in data.keys() and data['status']==1:
+        if data['status']==1:
             print('person deleted')
         else:
+            print(data,flush=True)
             newUm = data['staffId'] 
             #not existed
             if newUm not in face_list.keys():
@@ -172,12 +173,14 @@ def getBranchFaceListAndUpdate(orgId):
                     #save picture and update
                     saveFacePic(newUm,data['downloadUrl'])
                     updateFace(newUm,face_list[newUm])
-    #need deletion
+    # local face_list
+    # need deletion
     for key in face_list:
         delete = 1
         for data in result['data']:
-            if 'status' in data.keys() and data['status']==1:
-                print('person deleted')
+            #person deleted 
+            if data['status']==1:
+                print('person already deleted')    
             else:
                 if data['staffId'] == key:
                     delete = 0
