@@ -145,16 +145,19 @@ def getRunningFaceList(group_id):
         print('group user:'+result['data']['list'],flush=True)
 
 def getBranchFaceListAndUpdate(orgId):
+    print('local face_list',flush=True)
+    print(face_list,flush=True)
     data = {
         'branchNo':orgId,
         'token':face_token
     }
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    #print(r.text,flush=True)
+    print(r.text,flush=True)
     result =json.loads(r.text)
+    print('printed every person',flush=True)
     updatedDate = 0
     for data in result['data']:
-        if data['status']==1:
+        if data['status']=='1':
             print('person deleted')
         else:
             print(data,flush=True)
@@ -179,7 +182,7 @@ def getBranchFaceListAndUpdate(orgId):
         delete = 1
         for data in result['data']:
             #person deleted 
-            if data['status']==1:
+            if data['status']=='1':
                 print('person already deleted')    
             else:
                 if data['staffId'] == key:
