@@ -142,7 +142,7 @@ def getRunningFaceList(group_id):
     } 
     print('getRunningFaceList')
     r = requests.post(getGroupUrl,json = json.dumps(data))
-    print(r.text(),flush=True)
+    print(r.text,flush=True)
     result =json.loads(r.text) 
     if result['error_no']==0:
         print('group user number:'+len(result['data']['list']),flush=True)
