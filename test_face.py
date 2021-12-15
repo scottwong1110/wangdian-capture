@@ -4,6 +4,7 @@ import datetime
 import json
 from urllib.request import urlretrieve
 import time
+#import traceback
 
 #face_lib_config
 #HOUR_list_face = os.environ['HOUR_FACE'].split(',')
@@ -112,7 +113,7 @@ def updateFace(um,face_obj):
         "check": True
     }
     r = requests.post(updateFaceUrl,json = json.dumps(data))
-    print(r.text(),flush=True)
+    print(r.text,flush=True)
     result =json.loads(r.text)
     if result['error_no']==0:
         face_list[um]=face_obj
@@ -166,7 +167,6 @@ def getBranchFaceListAndUpdate(orgId):
             print('newUm=',newUm,flush=True)
             #not existed,first time
             if newUm not in face_list.keys():
-                print('newUm not in',flush=True)
                 newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
                 #save picture and update
                 saveFacePic(newUm,data['downloadUrl'])
@@ -201,12 +201,12 @@ def getBranchFaceListAndUpdate(orgId):
 
 def main():
     while True:
-        try :
-            getBranchFaceListAndUpdate(orgId)
-        except Exception as e:
-            print('error from getBranchFaceList',flush=True)
-            print(e,flush=True)
-        time.sleep(20)
+        #try :
+        getBranchFaceListAndUpdate(orgId)
+        #except Exception as e:
+        #    print('error from getBranchFaceList',flush=True)
+        #    print(e,flush=True)
+        #time.sleep(20)
 
                                            
 if __name__ == '__main__':
