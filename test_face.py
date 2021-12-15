@@ -4,6 +4,7 @@ import datetime
 import json
 from urllib.request import urlretrieve
 import time
+import base64
 
 import hashlib
 
@@ -129,9 +130,9 @@ def updateFace(um,face_obj):
         "user":{
             'user_id':um,
             #need to change to download from edge
-            'image':image_base64
+            #'image':image_base64
             #'image_url': face_obj['downloadUrl'],
-            #'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
+            'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
         },
         "groups":[
             run_env
@@ -172,8 +173,11 @@ def getRunningFaceList(group_id):
     data = {
         "group_id":group_id
     } 
-    print('getRunningFaceList')
-    r = requests.post(getGroupUrl,json = json.dumps(data))
+    print('getRunningFaceList',flush=True)  
+    body = json.dumps(data)
+    sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
+    sign_header["Content-Type"] = "application/json"
+    r = requests.post(getGroupUrl,data=body,headers = sign_header)
     print(r.text,flush=True)
     result =json.loads(r.text) 
     if result['error_no']==0:
