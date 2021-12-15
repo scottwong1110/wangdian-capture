@@ -163,8 +163,10 @@ def getBranchFaceListAndUpdate(orgId):
         else:
             print(data,flush=True)
             newUm = data['staffId'] 
+            print('newUm=',newUm,flush=True)
             #not existed,first time
             if newUm not in face_list.keys():
+                print('newUm not in',flush=True)
                 newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
                 #save picture and update
                 saveFacePic(newUm,data['downloadUrl'])
