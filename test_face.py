@@ -128,7 +128,7 @@ def updateFace(um,face_obj):
     image_base64 = get_image_base64(os.path.join('face_pic',um+'.jpg'))
     data = {
         "user":{
-            'user_id':um,
+            'user_id':um.strip(),
             #need to change to download from edge
             #'image':image_base64
             #'image_url': face_obj['downloadUrl'],
