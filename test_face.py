@@ -114,6 +114,7 @@ def updateFace(um,face_obj):
     r = requests.post(updateFaceUrl,json = json.dumps(data))
     result =json.loads(r.text)
     if result['error_no']==0:
+        face_list[um]=face_obj
         print('update face pic successfully!,um='+um)
 
 def deleteFace(um):
@@ -126,6 +127,7 @@ def deleteFace(um):
     r = requests.post(deleteFaceUrl,json = json.dumps(data))
     result =json.loads(r.text)
     if result['error_no']==0:
+        del face_list[um]
         print('delete face pic successfully!,um='+um)
 
 
@@ -158,26 +160,24 @@ def getBranchFaceListAndUpdate(orgId):
     updatedDate = 0
     for data in result['data']:
         if data['status']=='1':
-            print('person deleted')
+            print('person already deleted')
         else:
             print(data,flush=True)
             newUm = data['staffId'] 
-            #not existed
+            #not existed,first time
             if newUm not in face_list.keys():
-                face_list[newUm] = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
+                newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
                 #save picture and update
                 saveFacePic(newUm,data['downloadUrl'])
-                updateFace(newUm,face_list[newUm])
-
+                updateFace(newUm,newface)
             else:
-                #need modify
+                #need modify,update person
                 if data['updatedDate'] > face_list[newUm]['updatedDate']:
-                    face_list[newUm] = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
+                    newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
                     #save picture and update
                     saveFacePic(newUm,data['downloadUrl'])
-                    updateFace(newUm,face_list[newUm])
-    # local face_list
-    # need deletion
+                    updateFace(newUm,newface)
+    # local face_list need deletion
     for key in face_list:
         delete = 1
         for data in result['data']:
