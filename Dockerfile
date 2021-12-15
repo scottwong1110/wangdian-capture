@@ -10,4 +10,5 @@ COPY ./test_face.py /bankapp/deploy/
 COPY ./startup.sh /bankapp/deploy/
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 RUN chmod -R 777 /bankapp/deploy
+RUN export LANG=C.UTF-8
 CMD sh ./startup.sh
