@@ -12,7 +12,7 @@ import time
 face_token = os.environ['FACE_TOKEN']
 getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 #aibee interface
-getGroupUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/list-user'
+getGroupUrl = os.environ['AIBEE_HOST_URL']+':/users/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 
@@ -111,8 +111,8 @@ def updateFace(um,face_obj):
         ],
         "check": True
     }
-    print(json.dumps(data))
     r = requests.post(updateFaceUrl,json = json.dumps(data))
+    print(r.text(),flush=True)
     result =json.loads(r.text)
     if result['error_no']==0:
         face_list[um]=face_obj
@@ -140,9 +140,9 @@ def getRunningFaceList(group_id):
         "group_id":group_id
     } 
     print('getRunningFaceList')
-    print(json.dumps(data),flush=True)
     r = requests.post(getGroupUrl,json = json.dumps(data))
-    result =json.loads(r.text)
+    print(r.text(),flush=True)
+    result =json.loads(r.text) 
     if result['error_no']==0:
         print('group user number:'+len(result['data']['list']),flush=True)
         print('group user:'+result['data']['list'],flush=True)
