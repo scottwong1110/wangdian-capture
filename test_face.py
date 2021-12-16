@@ -25,8 +25,8 @@ def compress_image(infile, mb=1024, step=10, quality=80):
     :param quality: 初始压缩比率
     :return: 压缩文件地址，压缩文件大小
     """
-    if outfile is None:
-        outfile = infile
+    #if outfile is None:
+    #    outfile = infile
     o_size = get_size(infile)
     if o_size <= mb:
         im = Image.open(infile)
@@ -166,11 +166,11 @@ def updateFace(um,face_obj,pic_base64):
         ]
     }
     body = json.dumps(data)
-    print('body:',flush=True)
-    print(body,flush=True)
+    #print('body:',flush=True)
+    #print(body,flush=True)
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
     sign_header["Content-Type"] = "application/json"
-    print(sign_header,flush=True)
+    #print(sign_header,flush=True)
     r = requests.post(updateFaceUrl,data=body,headers = sign_header)
     print(r.text,flush=True)
     
