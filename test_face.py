@@ -5,7 +5,6 @@ import json
 from urllib.request import urlretrieve
 import time
 import base64
-
 import hashlib
 
 api_key = "Ne3XyaDSGWzkP120teh5rErB1dfIipMg"
@@ -37,11 +36,10 @@ def get_image_base64(ipath):
 face_token = os.environ['FACE_TOKEN']
 getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 #aibee interface
-getGroupUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/list-user'
+getGroupUrl = os.environ['AIBEE_HOST_URL']+'/groups/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 
-face_list = {}
 #face_list['wangshengyu345']={'downloadUrl':'','updatedDate':'',"isUm":""}
 
 #wangdian_capture_config
@@ -131,8 +129,8 @@ def updateFace(um,face_obj):
             'user_id':um.strip(),
             #need to change to download from edge
             #'image':image_base64
-            #'image_url': face_obj['downloadUrl'],
-            'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
+            'image_url': face_obj['downloadUrl'],
+            #'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
         },
         "groups":[
             run_env
@@ -149,20 +147,21 @@ def updateFace(um,face_obj):
     
     result =json.loads(r.text)
     if result['error_no']==0:
-        face_list[um]=face_obj
         print('update face pic successfully!,um='+um)
 
 def deleteFace(um):
     data = {
-        "user_id":um,
+        "user_id":um.strip(),
         "group_id":run_env
     } 
     print('deleteFace')
-    print(json.dumps(data),flush=True)
-    r = requests.post(deleteFaceUrl,json = json.dumps(data))
-    result =json.loads(r.text)
+    body = json.dumps(data)
+    sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
+    sign_header["Content-Type"] = "application/json"
+    r = requests.post(deleteFaceUrl,data=body,headers = sign_header)
+    print(r.text,flush=True)
+    result =json.loads(r.text) 
     if result['error_no']==0:
-        del face_list[um]
         print('delete face pic successfully!,um='+um)
 
 
@@ -170,21 +169,28 @@ def saveFacePic(um,imageUrl):
     urlretrieve(imageUrl, os.path.join('face_pic',um+'.jpg'))  
 
 def getRunningFaceList(group_id):
+    face_list={}
     data = {
-        "group_id":group_id
+        "group_id":group_id,
+        "page":1,
+        "page_size":1000
     } 
-    print('getRunningFaceList',flush=True)  
     body = json.dumps(data)
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
     sign_header["Content-Type"] = "application/json"
     r = requests.post(getGroupUrl,data=body,headers = sign_header)
-    print(r.text,flush=True)
+    #print(r.text,flush=True)
     result =json.loads(r.text) 
     if result['error_no']==0:
-        print('group user number:'+len(result['data']['list']),flush=True)
-        print('group user:'+result['data']['list'],flush=True)
+        for i in range(len(result['data']['list'])):
+            face_list[result['data']['list'][i]['user_id']]={'image_urls':result['data']['list'][i]['image_urls']}
+        #print('face_list=',face_list,flush=True)
+    return face_list
+        
 
 def getBranchFaceListAndUpdate(orgId):
+    #get current aibee facelist
+    face_list = getRunningFaceList(run_env)
     data = {
         'branchNo':orgId,
         'token':face_token
@@ -201,12 +207,12 @@ def getBranchFaceListAndUpdate(orgId):
             print(data,flush=True)
             newUm = data['staffId'] 
             print('newUm=',newUm,flush=True)
-            #not existed,first time
-            if newUm not in face_list.keys():
-                newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
-                #save picture and update
-                saveFacePic(newUm,data['downloadUrl'])
-                updateFace(newUm,newface)
+            #ADD
+            newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
+            #save picture and update
+            saveFacePic(newUm,data['downloadUrl'])
+            updateFace(newUm,newface)
+            
             #else:
             #    #need modify,update person
             #    if data['updatedDate'] > face_list[newUm]['updatedDate']:
@@ -214,25 +220,23 @@ def getBranchFaceListAndUpdate(orgId):
             #        #save picture and update
             #        saveFacePic(newUm,data['downloadUrl'])
             #        updateFace(newUm,newface)
-    # local face_list need deletion
-    #for key in face_list:
-    #    delete = 1
-    #    for data in result['data']:
-    #        #person deleted 
-    #        if data['status']=='1':
-    #            print('person already deleted')    
-    #        else:
-    #            if data['staffId'] == key:
-    #                delete = 0
-    #    if delete == 1:
-    #        deleteFace(key)
+    #need delete
+    for key in face_list:
+        delete = 1
+        for data in result['data']:
+            #person deleted 
+            if data['status']=='1':
+                print('person already deleted')    
+            else:
+                if data['staffId'] == key:
+                    delete = 0
+        if delete == 1:
+            deleteFace(key)
     
-    print('local face_list',flush=True)
-    print(face_list,flush=True)
 
     #show running face list
-    getRunningFaceList(run_env)
-
+    face_list = getRunningFaceList(run_env)
+    print('face_list=',face_list,flush=True)
     #return faceList
 
 def main():
