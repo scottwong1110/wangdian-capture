@@ -6,9 +6,39 @@ from urllib.request import urlretrieve
 import time
 import base64
 import hashlib
+from PIL import Image
 
 api_key = "Ne3XyaDSGWzkP120teh5rErB1dfIipMg"
 api_secret = "6xz2hfoBAT7t1quppM0md3awg17xpOI5"
+
+def get_size(file):
+    # 获取文件大小:KB
+    size = os.path.getsize(file)
+    return size / 1024
+
+def compress_image(infile, mb=1024, step=10, quality=80):
+    """不改变图片尺寸压缩到指定大小
+    :param infile: 压缩源文件
+    :param outfile: 压缩文件保存地址
+    :param mb: 压缩目标，KB
+    :param step: 每次调整的压缩比率
+    :param quality: 初始压缩比率
+    :return: 压缩文件地址，压缩文件大小
+    """
+    if outfile is None:
+        outfile = infile
+    o_size = get_size(infile)
+    if o_size <= mb:
+        im = Image.open(infile)
+        im.save(infile)
+
+    while o_size > mb:
+        im = Image.open(infile)
+        im.save(infile, quality=quality)
+        if quality - step < 0:
+            break
+        quality -= step
+        o_size = get_size(infile)
 
 def sign(method=None, body=None, api_key=None, api_secret=None):
     current_timestamp = int(time.time())
@@ -127,7 +157,7 @@ def updateFace(um,face_obj,pic_base64):
         "user":{
             'user_id':um.strip(),
             #need to change to download from edge
-            'image':image_base64
+            'image':pic_base64
             #'image_url': face_obj['downloadUrl'],
             #'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
         },
@@ -166,7 +196,10 @@ def deleteFace(um):
 
 def saveFacePic(um,imageUrl):
     pic_path = os.path.join('face_pic',um+'.jpg')
-    urlretrieve(imageUrl, pic_path)  
+    urlretrieve(imageUrl, pic_path)
+    compress_image(pic_path)
+    print('compressed_file_size=',flush=True)
+    print(str(get_size(pic_path)),flush=True)
     return get_image_base64(pic_path)
 
 def getRunningFaceList(group_id):
