@@ -166,32 +166,44 @@ def updateFace(um,face_obj,pic_base64):
         ]
     }
     body = json.dumps(data)
-    #print('body:',flush=True)
-    #print(body,flush=True)
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
     sign_header["Content-Type"] = "application/json"
-    #print(sign_header,flush=True)
     r = requests.post(updateFaceUrl,data=body,headers = sign_header)
+    print('update response')
     print(r.text,flush=True)
     
     result =json.loads(r.text)
     if result['error_no']==0:
         print('update face pic successfully!,um='+um)
+    else:
+        r = requests.post(updateFaceUrl,data=body,headers = sign_header)
+        print('update response')
+        print(r.text,flush=True)
+        result =json.loads(r.text)
+        if result['error_no']==0:
+            print('update face pic successfully!,um='+um)
 
 def deleteFace(um):
     data = {
         "user_id":um.strip(),
         "group_id":run_env
     } 
-    print('deleteFace')
     body = json.dumps(data)
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
     sign_header["Content-Type"] = "application/json"
     r = requests.post(deleteFaceUrl,data=body,headers = sign_header)
+    print('delete response')
     print(r.text,flush=True)
     result =json.loads(r.text) 
     if result['error_no']==0:
         print('delete face pic successfully!,um='+um)
+    else:
+        r = requests.post(deleteFaceUrl,data=body,headers = sign_header)
+        print('delete response')
+        print(r.text,flush=True)
+        result =json.loads(r.text)
+        if result['error_no']==0:
+            print('delete face pic successfully!,um='+um)
 
 
 def saveFacePic(um,imageUrl):
@@ -250,6 +262,11 @@ def getBranchFaceListAndUpdate(orgId):
             download_url = data['downloadUrl'] + '&fileId=' + data['faceImgId'] + '&suffix=jpg'
             print('download url=',download_url,flush=True)
             pic_base64 = saveFacePic(newUm,download_url)
+            
+            # delete all past faces
+            if newUm in face_list:
+                deleteFace(newUm)
+            
             updateFace(newUm,newface,pic_base64)
             
             #else:
