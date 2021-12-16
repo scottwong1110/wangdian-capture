@@ -38,7 +38,7 @@ getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 #aibee interface
 getGroupUrl = os.environ['AIBEE_HOST_URL']+'/groups/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
-deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
+deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-group'
 
 #face_list['wangshengyu345']={'downloadUrl':'','updatedDate':'',"isUm":""}
 
@@ -179,12 +179,15 @@ def getRunningFaceList(group_id):
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
     sign_header["Content-Type"] = "application/json"
     r = requests.post(getGroupUrl,data=body,headers = sign_header)
-    #print(r.text,flush=True)
+    print(r.text,flush=True)
     result =json.loads(r.text) 
     if result['error_no']==0:
-        for i in range(len(result['data']['list'])):
-            face_list[result['data']['list'][i]['user_id']]={'image_urls':result['data']['list'][i]['image_urls']}
-        #print('face_list=',face_list,flush=True)
+        if 'list' in result['data'] and type(result['data']['list'])==list:
+            for i in range(len(result['data']['list'])):
+                face_list[result['data']['list'][i]['user_id']]={'image_urls':result['data']['list'][i]['image_urls']}
+            #print('face_list=',face_list,flush=True)
+        else:
+            print('no one exists',flush=True)
     return face_list
         
 
@@ -196,7 +199,7 @@ def getBranchFaceListAndUpdate(orgId):
         'token':face_token
     }
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    #print(r.text,flush=True)
+    print(r.text,flush=True)
     result =json.loads(r.text)
     print('printed every person',flush=True)
     updatedDate = 0
