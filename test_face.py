@@ -122,14 +122,13 @@ def collectData(query):
     result =json.loads(r.text)
     return result['returnData']
 
-def updateFace(um,face_obj):
-    image_base64 = get_image_base64(os.path.join('face_pic',um+'.jpg'))
+def updateFace(um,face_obj,pic_base64):
     data = {
         "user":{
             'user_id':um.strip(),
             #need to change to download from edge
-            #'image':image_base64
-            'image_url': face_obj['downloadUrl'],
+            'image':image_base64
+            #'image_url': face_obj['downloadUrl'],
             #'image_url':'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F8434dd571149b56667991898e2004376212d8267169b3-P2VD0B_fw236&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1642149033&t=9e8bdb2249ae71015b39f669a8dfb85e'
         },
         "groups":[
@@ -166,7 +165,9 @@ def deleteFace(um):
 
 
 def saveFacePic(um,imageUrl):
-    urlretrieve(imageUrl, os.path.join('face_pic',um+'.jpg'))  
+    pic_path = os.path.join('face_pic',um+'.jpg')
+    urlretrieve(imageUrl, pic_path)  
+    return get_image_base64(pic_path)
 
 def getRunningFaceList(group_id):
     face_list={}
@@ -213,8 +214,10 @@ def getBranchFaceListAndUpdate(orgId):
             #ADD
             newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
             #save picture and update
-            saveFacePic(newUm,data['downloadUrl'])
-            updateFace(newUm,newface)
+            download_url = data['downloadUrl'] + '&fileId=' + data['faceImgId'] + '&suffix=jpg'
+            print('download url=',download_url,flush=True)
+            pic_base64 = saveFacePic(newUm,download_url)
+            updateFace(newUm,newface,pic_base64)
             
             #else:
             #    #need modify,update person
