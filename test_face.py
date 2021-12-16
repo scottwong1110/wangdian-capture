@@ -266,7 +266,7 @@ def getBranchFaceListAndUpdate(orgId):
     print('printed every person',flush=True)
     updatedDate = 0
     for data in result['data']:
-        if data['status']=='1':
+        if data['status']=='1' or 'staffId' not in data:
             print('person already deleted')
         else:
             print(data,flush=True)
@@ -298,7 +298,7 @@ def getBranchFaceListAndUpdate(orgId):
         delete = 1
         for data in result['data']:
             #person deleted 
-            if data['status']=='1':
+            if data['status']=='1' or 'staffId' not in data:
                 print('person already deleted')    
             else:
                 if data['staffId'] == key:
