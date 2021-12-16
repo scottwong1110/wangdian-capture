@@ -8,9 +8,6 @@ import base64
 import hashlib
 from PIL import Image
 
-api_key = "Ne3XyaDSGWzkP120teh5rErB1dfIipMg"
-api_secret = "6xz2hfoBAT7t1quppM0md3awg17xpOI5"
-
 def get_size(file):
     # 获取文件大小:KB
     size = os.path.getsize(file)
@@ -69,6 +66,8 @@ getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 getGroupUrl = os.environ['AIBEE_HOST_URL']+'/groups/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-group'
+api_key = os.environ['API_KEY']
+api_secret = os.environ['API_SECRET']
 
 #face_list['wangshengyu345']={'downloadUrl':'','updatedDate':'',"isUm":""}
 
