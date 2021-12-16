@@ -66,6 +66,7 @@ getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 getGroupUrl = os.environ['AIBEE_HOST_URL']+'/groups/v1/list-user'
 updateFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/add'
 deleteFaceUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-group'
+deleteImageUrl = os.environ['AIBEE_HOST_URL']+'/users/v1/remove-image'
 api_key = os.environ['API_KEY']
 api_secret = os.environ['API_SECRET']
 
@@ -182,7 +183,23 @@ def updateFace(um,face_obj,pic_base64):
         if result['error_no']==0:
             print('update face pic successfully!,um='+um)
 
-def deleteFace(um):
+def deleteFace(um,image_urls):
+    for image_url in image_urls:
+        data = {
+           "user_id":um.strip(),
+           "image_url": image_url
+        }
+
+        body = json.dumps(data)
+        sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
+        sign_header["Content-Type"] = "application/json"
+        r = requests.post(deleteImageUrl,data=body,headers = sign_header)
+        print('delete response')
+        print(r.text,flush=True)
+        result =json.loads(r.text) 
+        if result['error_no']==0:
+            print('delete face Image pic successfully!,um='+um)
+    
     data = {
         "user_id":um.strip(),
         "group_id":run_env
@@ -202,7 +219,7 @@ def deleteFace(um):
         print(r.text,flush=True)
         result =json.loads(r.text)
         if result['error_no']==0:
-            print('delete face pic successfully!,um='+um)
+            print('delete person successfully!,um='+um)
 
 
 def saveFacePic(um,imageUrl):
@@ -264,7 +281,8 @@ def getBranchFaceListAndUpdate(orgId):
             
             # delete all past faces
             if newUm in face_list:
-                deleteFace(newUm)
+                image_urls = face_list[newUm]['image_urls']
+                deleteFace(newUm,image_urls)
             
             updateFace(newUm,newface,pic_base64)
             
