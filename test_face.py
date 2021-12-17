@@ -247,7 +247,7 @@ def getRunningFaceList(group_id):
         if 'list' in result['data'] and type(result['data']['list'])==list:
             for i in range(len(result['data']['list'])):
                 face_list[result['data']['list'][i]['user_id']]={'image_urls':result['data']['list'][i]['image_urls']}
-            #print('face_list=',face_list,flush=True)
+            print('face_list=',face_list,flush=True)
         else:
             print('no one exists',flush=True)
     return face_list
@@ -261,9 +261,9 @@ def getBranchFaceListAndUpdate(orgId):
         'token':face_token
     }
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    print(r.text,flush=True)
+    #print(r.text,flush=True)
     result =json.loads(r.text)
-    print('printed every person',flush=True)
+    #print('printed every person',flush=True)
     updatedDate = 0
     for data in result['data']:
         if data['status']=='1' or 'staffId' not in data:
