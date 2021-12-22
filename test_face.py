@@ -155,7 +155,7 @@ def collectData(query):
 def updateFace(um,face_obj,pic_base64):
     data = {
         "user":{
-            'user_id':um.strip(),
+            'user_id':um.strip().upper(),
             #need to change to download from edge
             'image':pic_base64
             #'image_url': face_obj['downloadUrl']
@@ -186,7 +186,7 @@ def deleteFace(um,image_urls):
     if type(image_urls) == list: 
         for image_url in image_urls:
             data = {
-               "user_id":um.strip(),
+               "user_id":um.strip().upper(),
                "image_url": image_url
             }
 
@@ -201,7 +201,7 @@ def deleteFace(um,image_urls):
                 print('delete face Image pic successfully!,um='+um)
     
     data = {
-        "user_id":um.strip(),
+        "user_id":um.strip().upper(),
         "group_id":run_env
     } 
     body = json.dumps(data)
