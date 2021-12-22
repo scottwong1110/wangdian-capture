@@ -13,7 +13,7 @@ def get_size(file):
     size = os.path.getsize(file)
     return size / 1024
 
-def compress_image(infile, mb=1024, step=10, quality=80):
+def compress_image(infile, mb=100, step=10, quality=80):
     """不改变图片尺寸压缩到指定大小
     :param infile: 压缩源文件
     :param outfile: 压缩文件保存地址
