@@ -7,7 +7,6 @@ import time
 import base64
 import hashlib
 from PIL import Image
-import traceback
 
 def get_size(file):
     # 获取文件大小:KB
@@ -305,7 +304,7 @@ def getBranchFaceListAndUpdate(orgId):
                 if data['staffId'] == key:
                     delete = 0
         if delete == 1:
-            deleteFace(key)
+            deleteFace(key,face_list[key]['image_urls'])
     
 
     #show running face list
@@ -314,11 +313,7 @@ def getBranchFaceListAndUpdate(orgId):
     #return faceList
 
 def main():
-    try:
-        getBranchFaceListAndUpdate(orgId)
-    except Exception as e:
-        print(e)
-        traceback.print_exc()
+    getBranchFaceListAndUpdate(orgId)
     #while True:
         #try :
         #getBranchFaceListAndUpdate(orgId)
