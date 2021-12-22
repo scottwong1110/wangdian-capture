@@ -173,14 +173,14 @@ def updateFace(um,face_obj,pic_base64):
     
     result =json.loads(r.text)
     if result['error_no']==0:
-        print('update face pic successfully!,um='+um)
+        print('update face pic successfully!,um='+um.strip().upper())
     else:
         r = requests.post(updateFaceUrl,data=body,headers = sign_header)
         print('update response')
         print(r.text,flush=True)
         result =json.loads(r.text)
         if result['error_no']==0:
-            print('update face pic successfully!,um='+um)
+            print('update face pic successfully!,um='+um.strip().upper())
 
 def deleteFace(um,image_urls):
     if type(image_urls) == list: 
@@ -198,7 +198,7 @@ def deleteFace(um,image_urls):
             print(r.text,flush=True)
             result =json.loads(r.text) 
             if result['error_no']==0:
-                print('delete face Image pic successfully!,um='+um)
+                print('delete face Image pic successfully!,um='+um.strip().upper())
     
     data = {
         "user_id":um.strip().upper(),
@@ -219,7 +219,7 @@ def deleteFace(um,image_urls):
         print(r.text,flush=True)
         result =json.loads(r.text)
         if result['error_no']==0:
-            print('delete person successfully!,um='+um)
+            print('delete person successfully!,um='+um.strip().upper())
 
 
 def saveFacePic(um,imageUrl):
