@@ -270,7 +270,7 @@ def getBranchFaceListAndUpdate(orgId):
             print('person already deleted')
         else:
             print(data,flush=True)
-            newUm = data['staffId'] 
+            newUm = data['staffId'].upper() 
             print('newUm=',newUm,flush=True)
             #ADD
             newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
@@ -284,11 +284,7 @@ def getBranchFaceListAndUpdate(orgId):
                 image_urls = face_list[newUm]['image_urls']
                 deleteFace(newUm,image_urls)
             
-            face_list1 = getRunningFaceList(run_env)
-            print('face_list1=',face_list1,flush=True)
             updateFace(newUm,newface,pic_base64)
-            face_list1 = getRunningFaceList(run_env)
-            print('face_list1=',face_list1,flush=True)
             
             #else:
             #    #need modify,update person
@@ -297,28 +293,31 @@ def getBranchFaceListAndUpdate(orgId):
             #        #save picture and update
             #        saveFacePic(newUm,data['downloadUrl'])
             #        updateFace(newUm,newface)
-    #need delete
-    # in face
+
+    # In aibee but not in backmanager,so need to delete
     face_list = getRunningFaceList(run_env)
+    list_to_del = {}
     for key in face_list:
-        delete = 1
-        #print('aibee data=',key,flush=True)
         for data in result['data']:
-            #print('wangdian data=',data,flush=True)
-            #person deleted 
+            #print('key=',key)
+            #print(data)
             if data['status']=='1' or 'staffId' not in data:
                 #print('person already deleted')
-                continue
+                if key not in list_to_del:
+                    list_to_del[key] = 1
             else:
-                if data['staffId'] == key:
-                    delete = 0
-                    break
-        if delete == 1:
-            #deleteFace(key,face_list[key]['image_urls'])
-            print('delete Face')
+                if data['staffId'].upper() == key:
+                    list_to_del[key] = 0
+                
+    for key in list_to_del:            
+        if list_to_del[key] == 1:
+            #print('before delete')
+            #print(list_to_del)
+            deleteFace(key,face_list[key]['image_urls'])
+            #print('delete Face')
     
 
-    #show running face list
+    #show final running face list
     face_list = getRunningFaceList(run_env)
     print('face_list=',face_list,flush=True)
     #return faceList
