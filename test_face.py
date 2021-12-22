@@ -25,9 +25,11 @@ def compress_image(infile, mb=100, step=10, quality=80):
     #if outfile is None:
     #    outfile = infile
     o_size = get_size(infile)
+    print('before compress:',o_size)
     if o_size <= mb:
-        im = Image.open(infile)
-        im.save(infile)
+        return 
+        #im = Image.open(infile)
+        #im.save(infile)
 
     while o_size > mb:
         im = Image.open(infile)
@@ -162,7 +164,8 @@ def updateFace(um,face_obj,pic_base64):
         },
         "groups":[
             run_env
-        ]
+        ],
+        "check":True
     }
     body = json.dumps(data)
     sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
