@@ -7,6 +7,7 @@ import time
 import base64
 import hashlib
 from PIL import Image
+import traceback
 
 def get_size(file):
     # 获取文件大小:KB
@@ -313,7 +314,11 @@ def getBranchFaceListAndUpdate(orgId):
     #return faceList
 
 def main():
-    getBranchFaceListAndUpdate(orgId)
+    try:
+        getBranchFaceListAndUpdate(orgId)
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
     #while True:
         #try :
         #getBranchFaceListAndUpdate(orgId)
