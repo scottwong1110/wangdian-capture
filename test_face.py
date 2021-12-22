@@ -306,8 +306,10 @@ def getBranchFaceListAndUpdate(orgId):
                 if key not in list_to_del:
                     list_to_del[key] = 1
             else:
-                if data['staffId'].upper() == key:
+                if data['staffId'].strip().upper() == key:
                     list_to_del[key] = 0
+                    
+    print('list_to_del=',list_to_del)                
                 
     for key in list_to_del:            
         if list_to_del[key] == 1:
