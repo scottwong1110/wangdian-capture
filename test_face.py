@@ -284,6 +284,8 @@ def getBranchFaceListAndUpdate(orgId):
                 image_urls = face_list[newUm]['image_urls']
                 deleteFace(newUm,image_urls)
             
+            face_list1 = getRunningFaceList(run_env)
+            print('face_list1=',face_list1,flush=True)
             updateFace(newUm,newface,pic_base64)
             face_list1 = getRunningFaceList(run_env)
             print('face_list1=',face_list1,flush=True)
