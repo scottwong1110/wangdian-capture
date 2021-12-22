@@ -183,21 +183,22 @@ def updateFace(um,face_obj,pic_base64):
             print('update face pic successfully!,um='+um)
 
 def deleteFace(um,image_urls):
-    for image_url in image_urls:
-        data = {
-           "user_id":um.strip(),
-           "image_url": image_url
-        }
+    if type(image_urls) == list: 
+        for image_url in image_urls:
+            data = {
+               "user_id":um.strip(),
+               "image_url": image_url
+            }
 
-        body = json.dumps(data)
-        sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
-        sign_header["Content-Type"] = "application/json"
-        r = requests.post(deleteImageUrl,data=body,headers = sign_header)
-        print('delete response')
-        print(r.text,flush=True)
-        result =json.loads(r.text) 
-        if result['error_no']==0:
-            print('delete face Image pic successfully!,um='+um)
+            body = json.dumps(data)
+            sign_header = sign(method='post', body=body, api_key=api_key, api_secret=api_secret)
+            sign_header["Content-Type"] = "application/json"
+            r = requests.post(deleteImageUrl,data=body,headers = sign_header)
+            print('delete response')
+            print(r.text,flush=True)
+            result =json.loads(r.text) 
+            if result['error_no']==0:
+                print('delete face Image pic successfully!,um='+um)
     
     data = {
         "user_id":um.strip(),
@@ -294,17 +295,23 @@ def getBranchFaceListAndUpdate(orgId):
             #        updateFace(newUm,newface)
     #need delete
     # in face
+    face_list = getRunningFaceList(run_env)
     for key in face_list:
         delete = 1
+        #print('aibee data=',key,flush=True)
         for data in result['data']:
+            #print('wangdian data=',data,flush=True)
             #person deleted 
             if data['status']=='1' or 'staffId' not in data:
-                print('person already deleted')    
+                #print('person already deleted')
+                continue
             else:
                 if data['staffId'] == key:
                     delete = 0
+                    break
         if delete == 1:
-            deleteFace(key,face_list[key]['image_urls'])
+            #deleteFace(key,face_list[key]['image_urls'])
+            print('delete Face')
     
 
     #show running face list
