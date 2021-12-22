@@ -293,6 +293,7 @@ def getBranchFaceListAndUpdate(orgId):
             #        saveFacePic(newUm,data['downloadUrl'])
             #        updateFace(newUm,newface)
     #need delete
+    # in face
     for key in face_list:
         delete = 1
         for data in result['data']:
