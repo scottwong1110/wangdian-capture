@@ -212,7 +212,7 @@ def deleteFace(um,image_urls):
     print(r.text,flush=True)
     result =json.loads(r.text) 
     if result['error_no']==0:
-        print('delete face pic successfully!,um='+um)
+        print('delete face pic successfully!,um='+um.strip().upper())
     else:
         r = requests.post(deleteFaceUrl,data=body,headers = sign_header)
         print('delete response')
