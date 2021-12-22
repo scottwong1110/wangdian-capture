@@ -270,7 +270,7 @@ def getBranchFaceListAndUpdate(orgId):
             print('person already deleted')
         else:
             print(data,flush=True)
-            newUm = data['staffId'].upper() 
+            newUm = data['staffId'].strip().upper()
             print('newUm=',newUm,flush=True)
             #ADD
             newface = {'downloadUrl':data['downloadUrl'],'updatedDate':data['updatedDate']}
