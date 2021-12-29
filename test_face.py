@@ -268,6 +268,9 @@ def getBranchFaceListAndUpdate(orgId):
     result =json.loads(r.text)
     #print('printed every person',flush=True)
     updatedDate = 0
+    if data not in result:
+        print('cannot get data from backmanager',flush=True)
+        return
     for data in result['data']:
         if data['status']=='1' or 'staffId' not in data:
             print('person already deleted')
