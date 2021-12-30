@@ -9,17 +9,20 @@ import hashlib
 from PIL import Image
 import jwt
 face_token = os.environ['FACE_TOKEN']
+username = os.environ['USERNAME']
 
 def create_token():
+    global face_token
     payload = {
     'iss':'gusibi.com',
     'iat':int(time.time()),
     'exp':int(time.time())-86400*7,
     'aud':'www.gusibi.com',
+    'username':username,
     'scopes':['open']
     }
     token = jwt.encode(payload,face_token,algorithm='HS256')
-    return True,{'access_token':token}
+    return token
 
 #def verify_bearer_token(token):
 #    payload = jwt.decode(token,face_token,audience='www.gusibi.com',algorithms=['HS256'])
@@ -280,14 +283,15 @@ def getBranchFaceListAndUpdate(orgId):
     face_list = getRunningFaceList(run_env)
     data = {
         'branchNo':orgId,
-        'token':face_token
+        'token':create_token()
     }
+    print(data,flush=True)
     r = requests.post(getFaceListUrl,data = data, verify=verify)
-    #print(r.text,flush=True)
+    print(r.text,flush=True)
     result =json.loads(r.text)
-    #print('printed every person',flush=True)
+    print('result=',result,flush=True)
     updatedDate = 0
-    if data not in result:
+    if 'data' not in result:
         print('cannot get data from backmanager',flush=True)
         return
     for data in result['data']:
