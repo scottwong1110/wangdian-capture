@@ -7,6 +7,25 @@ import time
 import base64
 import hashlib
 from PIL import Image
+import jwt
+face_token = os.environ['FACE_TOKEN']
+
+def create_token():
+    payload = {
+    'iss':'gusibi.com',
+    'iat':int(time.time()),
+    'exp':int(time.time())-86400*7,
+    'aud':'www.gusibi.com',
+    'scopes':['open']
+    }
+    token = jwt.encode(payload,face_token,algorithm='HS256')
+    return True,{'access_token':token}
+
+#def verify_bearer_token(token):
+#    payload = jwt.decode(token,face_token,audience='www.gusibi.com',algorithms=['HS256'])
+#    if payload:
+#        return True,token
+#    return False,token
 
 def get_size(file):
     # 获取文件大小:KB
@@ -62,7 +81,7 @@ def get_image_base64(ipath):
 #HOUR_list_face = os.environ['HOUR_FACE'].split(',')
 #HOURS_face = [int(i) for i in HOUR_list]
 #MINUTE_face = int(os.environ['MINUTE_FACE'])
-face_token = os.environ['FACE_TOKEN']
+
 getFaceListUrl = os.environ['GET_FACE_LIST_URL']
 #aibee interface
 getGroupUrl = os.environ['AIBEE_HOST_URL']+'/groups/v1/list-user'
