@@ -16,7 +16,7 @@ def create_token():
     payload = {
     'iss':'gusibi.com',
     'iat':int(time.time()),
-    'exp':int(time.time())+86400*7,
+    'exp':int(time.time())+3000,
     'aud':'www.gusibi.com',
     'username':username,
     'scopes':['open']
